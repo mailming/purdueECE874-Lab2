@@ -1,0 +1,29 @@
+\section{Sample Prompts}
+\label{appendix:sample-prompts}
+
+This appendix provides sample prompts you may use when interacting with an LLM.
+You are not required to use these prompts verbatim.
+However, you should keep the specification fixed and avoid importing external tax rules beyond what is stated in~\cref{appendix:tax-spec}.
+
+\subsection{Prompt 1: Increasing Design Diversity}
+\label{appendix:prompt-diversity}
+
+\begin{tcolorbox}[colback=purple!10,colframe=purple!70!black,boxrule=0.5pt]
+\textbf{Prompt:} Hi ChatGPT, I'm interested in developing diverse software implementations of a spec.
+I am thinking about ways to prompt you that will increase the variation in the implementations.
+I am wondering about programming language and library selection (vs.\ custom implementations of components).
+Are there other things I should think about?
+Please give concrete strategies and examples, and explain how each strategy might affect the diversity of failure modes.
+\end{tcolorbox}
+
+\subsection{Prompt 2: Starting from a System Design}
+\label{appendix:prompt-system-design}
+
+\begin{tcolorbox}[colback=purple!10,colframe=purple!70!black,boxrule=0.5pt]
+\textbf{Prompt:} The full spec is available as a file in your context.
+Can we start with a system design?
+I want the design to have an NDJSON parser, an analysis engine, and an output writer.
+I would also like to use a database to store intermediate computations, so that the tax computation pipeline is explicit and debuggable.
+Please propose a modular architecture and data model first, before writing any code.
+Then, after I confirm, we will implement the modules one at a time.
+\end{tcolorbox}

@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+venv/
+.env/
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+*.swp
+
+# Optional: uncomment to avoid committing large generated NDJSON (e.g. 10k line files)
+# *full*.ndjson
+# out-*.ndjson

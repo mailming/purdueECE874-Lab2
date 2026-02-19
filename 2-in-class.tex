@@ -1,0 +1,175 @@
+\setcounter{section}{0}
+\setcounter{subsection}{0}
+\setcounter{subsubsection}{0}
+
+\clearpage
+\begin{center}
+  {\Large\bfseries In-Class Lab}\\[0.5em]
+\end{center}
+\vspace{1em}
+
+\section{In-Class Lab: $3$-Version Development and Independence Assessment}
+
+In the in-class portion of this lab, you will construct three independently generated implementations of the tax engine specified in~\cref{appendix:tax-spec}.
+The objective is to instantiate the $2$-out-of-$3$ ($2$oo$3$) voting architecture analyzed in the pre-lab.
+By the end of the session, each team will have produced three distinct implementations of the same frozen specification and evaluated them on a visible test set.
+
+To approximate independent development:
+
+\begin{itemize}
+  \item Each implementation must be generated in a fresh LLM session.
+  \item Team members may discuss high-level strategy before generation.
+  \item During generation, team members may not share code across versions.
+  \item Each implementation should intentionally vary along at least one dimension (\eg language, architecture, numeric handling, library usage).
+\end{itemize}
+
+\subsection{Team Structure and Requirement}
+
+All submissions (in-class and online) must contain three LLM-generated implementations.
+
+\textbf{In-class students:}
+
+Work in groups of two students.
+At most one group of three may be formed if necessary.
+
+\textbf{Online students:}
+
+Online students should work with those of their Team project partners who are also online students.
+This will result in groups of 2-3 online students for this submission.
+
+\begin{tcolorbox}[colback=purple!10,colframe=purple!70!black,boxrule=0.5pt]
+\textbf{Team members:}  
+\begin{itemize}
+    \item NAME 1 (email)
+    \item NAME 2 (email)
+\end{itemize}
+\textbf{Team signup forum:} \labTwoForumLink\par
+Please indicate your team members in the Brightspace discussion forum link above.
+\end{tcolorbox}
+
+\subsection{Version Independence Requirements}
+
+
+
+You may use prompting strategies such as those illustrated in \cref{appendix:sample-prompts}.
+However, the specification in \cref{appendix:tax-spec} must remain unchanged.
+
+\subsection{Plan for Diversity}
+
+Before generating code, discuss how you will induce diversity across the three implementations.
+You may draw on prompting strategies such as those illustrated in~\cref{appendix:sample-prompts}.
+
+
+\begin{itemize}
+  \item How you will induce diversity across the three implementations,
+  \item What dimensions you expect might influence failure behavior,
+  \item Whether floating-point handling, architecture, or library choice might affect correctness.
+\end{itemize}
+
+\begin{tcolorbox}[colback=purple!10,colframe=purple!70!black,boxrule=0.5pt]
+\textbf{Team Strategy:}  
+In 2--3 sentences, describe how your team will intentionally induce diversity across the three implementations.
+\end{tcolorbox}
+
+\subsection{Generate Three Implementations}
+
+Generate your three implementations.
+
+\begin{enumerate}
+  \item Start a new LLM session.
+  \item Provide the full specification from \cref{appendix:tax-spec}.
+  \item Develop a complete implementation that reads the input and produces tax outputs.
+  \item Ensure the implementation runs locally.
+\end{enumerate}
+
+\textit{\textbf{Note 1:}
+I have fed the specification to ChatGPT, Microsoft CoPilot, and Google Gemini and prompted them to ``Write a program to answer this spec''.
+All of them choked, had network issues, or timed out.
+For the in-class part, you will need to break things down for them so you can complete the implementation in a timely manner.}
+
+\textit{\textbf{Note 2:}
+I advise you to complete two implementations and do a 1oo2 check before you develop the third implementation.
+}
+
+A small smoke test set (Test Set 1) is provided on Brightspace.
+Because we do not provide a reference implementation for this lab, Test Set 1 cannot help you establish correctness (nor is that the point of this lab).
+Instead, it is used to reduce noise by ensuring that all implementations:
+
+\begin{itemize}
+  \item parse inputs successfully,
+  \item produce well-formed outputs, and
+  \item behave consistently enough to proceed with meaningful analysis of disagreement and potential correlated failures.
+
+\end{itemize}
+
+Run all three implementations on Test Set 1.
+If any implementation crashes, produces malformed output, or disagrees with the other implementations, revise it (\eg via debugging and prompting) and re-run Test Set 1.
+Proceed only once your team has a stable outcome on Test Set 1.
+You should aim for unanimous agreement across all cases, thus indicating each version is (seemingly) correct.
+Settling for 2oo3 agreement on every case would suffice if needed.
+
+\subsection{Independence Analysis on Test Set 2}
+
+A second, larger ``full'' test set (Test Set 2, approximately 10{,}000 inputs) is provided on Brightspace.
+A ``runner'' program is also supplied to let you drive multiple implementations and get results.
+Run all three implementations on Test Set 2 and record, for each input, whether the three implementations agree.
+
+Because no external oracle is provided, we treat disagreement among implementations as evidence of potential fault events.
+This allows us to study the structure of divergence without assuming any version is correct.
+
+Construct an agreement table with one row per input from Test Set 2.
+For each input, record the outputs produced by each version:
+
+\[
+\text{Input} \rightarrow (\text{Output}_{V1},\ \text{Output}_{V2},\ \text{Output}_{V3})
+\]
+
+
+Using this data, compute and report:
+
+\begin{itemize}
+  \item The fraction of inputs with unanimous agreement (3/3).
+  \item The fraction of inputs with exactly one dissenting version (a 2--1 split).
+  \item The fraction of inputs where multiple versions diverge from one another.
+  \item For each version, how often it disagrees with the other two.
+\end{itemize}
+
+Discuss:
+
+\begin{itemize}
+  \item Whether disagreement events appear isolated or clustered on specific inputs.
+  \item Whether the same implementation tends to disagree repeatedly.
+  \item Whether disagreement patterns suggest independence or correlated behavior.
+\end{itemize}
+
+At this stage, you are not estimating true failure probabilities.
+Rather, you are examining the empirical structure of disagreement as preliminary evidence about independence assumptions.
+
+This analysis evaluates \emph{consistency} and \emph{correlated divergence} among independently generated implementations.
+It does not, by itself, establish correctness, since we have not included correct answers in the test set.
+
+\subsection{Preliminary Analysis}
+
+Within your team, discuss:
+
+\begin{itemize}
+  \item Are disagreement events concentrated on the same inputs across implementations, or do they appear scattered?
+  \item When disagreements occur, do they tend to implicate the same implementation repeatedly (one version often being the outlier), or do outliers rotate across versions?
+  \item What aspects of the specification appear to trigger disagreements?
+  For example, are disagreements concentrated on inputs that activate the floating-point rules (e.g., the EWMA-based surcharge), threshold boundaries, or phaseouts?
+  \item Based on the observed disagreement patterns, is the independence assumption plausible, or do you see evidence of correlated behavior (common-mode mistakes)?
+\end{itemize}
+
+You are not required to perform formal statistical testing at this stage.
+The goal is to build intuition about correlated behavior and the independence assumption using empirical disagreement data.
+If you choose to complete the take-home portion of the lab, you will perform a larger version of this experiment and may incorporate more formal modeling of the underlying hypothesis of independence.
+
+\begin{tcolorbox}[colback=purple!10,colframe=purple!70!black,boxrule=0.5pt]
+\textbf{Deliverable for the In-Class Portion:}
+Submit:
+\begin{itemize}
+  \item The three implementations (distinct zipped folders labeled \texttt{impl-1.zip}, \texttt{impl-2.zip}, \texttt{impl-3.zip}),
+  \item Your disagreement table for Test Set 2 (as a CSV with columns \texttt{input\_id}, \texttt{out\_v1}, \texttt{out\_v2}, \texttt{out\_v3}),\footnote{For simplicity, you can sum the federal and state taxes for those outputs and just report results in the aggregate}
+  \item A brief analysis describing observed agreement or disagreement patterns, including at least one table or figure.
+\end{itemize}
+\end{tcolorbox}

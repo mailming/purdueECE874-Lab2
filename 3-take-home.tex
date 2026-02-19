@@ -1,0 +1,198 @@
+\setcounter{section}{0}
+\setcounter{subsection}{0}
+\setcounter{subsubsection}{0}
+
+\clearpage
+\begin{center}
+  {\Large\bfseries Take-Home Lab}\\[0.5em]
+\end{center}
+\vspace{1em}
+
+\section{Take-Home Portion: Empirical Evaluation of $N$-Version Programming}
+
+In this take-home component, you will extend the in-class experiment in two directions:
+
+\begin{itemize}
+  \item Develop the general $k$-out-of-$N$ reliability model under the assumption of independence.
+  \item Empirically evaluate whether LLM-generated implementations conform to that model.
+\end{itemize}
+
+\subsection{Theory: Derivation of the $k$-out-of-$N$ Model}
+
+Suppose each version fails independently with probability $p$ on a given demand.
+Let $q = 1 - p$ denote the probability of success.
+
+Let $X$ be the number of successful versions out of $N$.
+Under the independence assumption, $X$ follows a binomial distribution:
+
+\[
+X \sim \text{Binomial}(N, q).
+\]
+
+For a $k$-out-of-$N$ voting architecture, the system is correct if at least $k$ versions are correct.
+Equivalently, the system fails if fewer than $k$ versions are correct.
+
+\textbf{Your task:}
+Derive an expression for the system failure probability $P(\text{system failure})$ for a general $k$-out-of-$N$ voter.
+Your final answer should be written in summation form using binomial coefficients (a closed-form simplification is \emph{not} required).
+Clearly indicate where and how the independence assumption is used in your derivation.
+
+Your derivation should clearly specify:
+
+\begin{itemize}
+  \item The definition of the random variable $X$ (what does it count?),
+  \item The probability that exactly $i$ versions are correct,
+  \item The condition under which the $k$-out-of-$N$ voter fails,
+  \item The resulting summation expression for $P(\text{system failure})$.
+\end{itemize}
+
+\subsection{Evaluation: Empirical Comparison to the Independence Model}
+
+In the in-class portion, you initiated $N$-version development using LLM-generated implementations, created manually.
+For the take-home component, you will scale this up.
+
+\subsubsection{Step 1: Generate Versions}
+
+Generate at least $N = 100$ distinct implementations of the provided specification.
+
+You may use your choice of:
+
+\begin{itemize}
+  \item LLM-based agents,
+  \item Interactive LLM sessions,
+  \item Multiple fresh sessions with varied prompts,
+  \item Any system available to you (\eg Gemini Pro, Microsoft Copilot, open-weight models).
+\end{itemize}
+
+If you have not used these types of systems before, here are some options with references to tutorials on how to get started:
+
+\begin{enumerate}
+    \item CoPilot Skills on VS Code\cite{copilot-documentation}. Pay close attention to the examples on the drop-down for this.
+
+    \item A programmatic agent system such as python Transformers~\cite{transformers-tutorial}. This may allow for more control than the one above, but will require more programming
+
+    \item An SDK such as Claude's Agent SDK\cite{claude-agent-sdk}, which strikes a balance between the two above at the cost of vendor lock-in.
+\end{enumerate}
+
+Each implementation must:
+
+\begin{itemize}
+  \item Use the same frozen specification,
+  \item Be developed independently (fresh session),
+  \item Be runnable against the test suite.
+\end{itemize}
+
+\textbf{Hint}: I picked a large enough $N$ that you should automate this with an agentic approach, or at minimum a wrapper around a series of LLM calls.
+
+ \begin{tcolorbox}[colback=yellow!10,colframe=black,boxrule=0.5pt]
+  \textbf{Deliverable:} Give your derivation of the $k$oo$N$ system failure probability.
+  \end{tcolorbox} 
+
+\subsubsection{Step 2: Measure Failure Behavior}
+
+We will release the full test suite on Brightspace.
+
+For each input in the test suite:
+
+\begin{itemize}
+  \item Record which versions produce incorrect output.
+  \item Estimate:
+  \begin{itemize}
+    \item Marginal failure probability $p$,
+    \item Pairwise joint failure probabilities,
+    \item Empirical distribution of the number of failures per input.
+  \end{itemize}
+\end{itemize}
+
+ \begin{tcolorbox}[colback=yellow!10,colframe=black,boxrule=0.5pt]
+  \textbf{Deliverable:} Provide your analysis, illustrated with at least one table or figure.
+  \end{tcolorbox} 
+
+\subsubsection{Step 3: Compare to the $k$-out-of-$N$ Model}
+
+Using your derived formula from the Theory section:
+
+\begin{itemize}
+  \item Compute the predicted system failure probability under the assumption of independent failures.
+  \item Compute the observed system failure rate under $k$-out-of-$N$ voting.
+  \item Compare the predicted and observed values.
+\end{itemize}
+
+At this stage, you are performing a \emph{descriptive model comparison}, not a formal statistical hypothesis test.
+Your goal is to assess whether the empirical behavior appears consistent with the binomial independence model, and to characterize any discrepancies you observe.
+
+Discuss:
+
+\begin{itemize}
+  \item Whether the observed joint behavior is qualitatively consistent with independence.
+  \item Whether voting improves reliability relative to a single version.
+  \item How strongly the observed behavior deviates from the binomial prediction.
+  \item Plausible explanations for any deviation.
+\end{itemize}
+
+You are not required to compute $p$-values or conduct formal hypothesis tests here.
+If you wish to perform a rigorous statistical test of independence, see the optional subsection below.
+
+\subsubsection{Optional: Statistical Analysis in the Style of Knight \& Leveson}
+
+In the required portion of this lab, you compared observed reliability to the prediction of the $k$-out-of-$N$ model under independence.
+That comparison is descriptive: you assessed whether the empirical data appear to conform to the binomial model, but you did not perform a formal statistical hypothesis test.
+
+Knight and Leveson (1990), by contrast, conducted formal statistical analyses to evaluate whether observed joint failure behavior was consistent with independence.
+Replicate their statistical framing, including:
+
+\begin{itemize}
+  \item Testing whether observed joint failure rates significantly exceed $p^2$ (or the appropriate independence prediction for the $k$oo$N$ scenario),
+  \item Performing formal hypothesis tests of independence,
+  \item Estimating correlation coefficients between version failure indicators,
+  \item Computing confidence intervals for marginal and joint failure probabilities.
+\end{itemize}
+
+If you choose this option, clearly state:
+
+\begin{itemize}
+  \item Your null hypothesis ($H_0$),
+  \item The statistical test used,
+  \item Any assumptions required,
+  \item Your interpretation of the result.
+\end{itemize}
+
+\begin{tcolorbox}[colback=yellow!10,colframe=black,boxrule=0.5pt]
+\textbf{Deliverable:} Provide your statistical analysis and interpretation.
+\end{tcolorbox}
+
+This deliverable is entirely optional, but instructive.
+You are welcome to use ChatGPT or other tools to assist with statistical calculations, provided that you understand and clearly explain the methodology used.
+You may complete any part of it that you see fit.
+
+\subsection{Deliverables}
+
+Provide your empirical results and a written interpretation (1–2 pages) addressing whether the data conform to the $k$oo$N$ independence model.
+You may place your solutions in the colorboxes above, or in a new section here as you like.
+
+\subsection{A Note on Interpreting ``No Failures Observed''}
+
+Design redundancy is most suitable when single-version reliability cannot be assured, or when residual risk remains unacceptably high even after best-effort assurance activities.
+If single-version reliability is already extremely high on the input distribution represented by our test suite, then an $N$-version experiment may observe few or no failures, and therefore may have limited ability to evaluate failure independence empirically.
+
+To see why, suppose a single generated implementation fails on approximately $1$ in $10^6$ inputs (\ie $p = 10^{-6}$).
+Our controlled test suite contains $T = 10{,}000$ inputs.
+The expected number of failures for a single implementation on this suite is:
+
+\[
+\mathbb{E}[\text{single-version failures}] = Tp = 10{,}000 \cdot 10^{-6} = 0.01.
+\]
+
+Thus, even if a given implementation is imperfect, we should expect to observe zero failures most of the time.
+
+Under the independence model, a 1oo2 voter fails only when both versions fail on the same input, which occurs with probability $p^2$.
+The expected number of 1oo2 system failures across the test suite is therefore:
+
+\[
+\mathbb{E}[\text{1oo2 system failures}] = T p^2 = 10{,}000 \cdot (10^{-6})^2 = 10^{-8}.
+\]
+
+This value is effectively zero.
+In such a regime, the absence of observed failures is not strong evidence that failures are independent, nor that redundancy is unnecessary; it primarily indicates that the experiment, as instantiated by the available test suite, has limited statistical power to observe rare events.
+
+If you observe very few (or zero) failures, you should report this outcome explicitly and discuss what it implies---and does not imply---about (i) single-version reliability, (ii) failure independence, and (iii) the value of design diversity for this task.

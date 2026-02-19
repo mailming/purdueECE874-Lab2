@@ -1,0 +1,206 @@
+%%
+%% ECE 50874: Solo Project - Failure Analysis
+%% Format: ACM single-column (acmart)
+%%
+\documentclass[manuscript,screen,nonacm]{acmart}
+
+%% ==========================================
+%% 1. PACKAGES & CONFIGURATION
+%% ==========================================
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{tcolorbox}
+\usepackage{cleveref}
+
+\usepackage{xspace}
+
+\newcommand{\ie}{\textit{i.e.}\@\xspace}
+\newcommand{\eg}{\textit{e.g.}\@\xspace}
+
+\raggedbottom
+
+\settopmatter{printacmref=false}
+\AtBeginDocument{\providecommand\BibTeX{{Bib\TeX}}}
+
+%% ==========================================
+%% 2. INSTRUCTION COMMAND
+%% ==========================================
+\newcommand{\instruction}[1]{%
+    \begin{list}{}{%
+        \leftmargin=10pt
+        \rightmargin=10pt
+        \topsep=1em
+    }
+    \item[]
+    \begingroup
+        \color{gray}\itshape
+        \raggedright
+        \sloppy
+        \textbf{Instructions:} #1
+    \endgroup
+    \end{list}
+}
+
+\newcommand{\labTwoForumURL}{https://purdue.brightspace.com/d2l/le/1489299/discussions/topics/879296/View}
+\newcommand{\labTwoForumLink}{\href{\labTwoForumURL}{Lab 2 Team Signup Discussion (Brightspace)}}
+
+
+%% ==========================================
+%% 3. DOCUMENT METADATA
+%% ==========================================
+\title{Lab 2: Diverse and Redundant Software Design}
+\subtitle{LLM-Powered N-Version Programming}
+
+\begin{document}
+
+%% Author Information
+\author{Your Name}
+\affiliation{%
+  \institution{Purdue University}
+  \city{West Lafayette}
+  \state{Indiana}
+  \country{USA}
+}
+\email{your.email@purdue.edu}
+
+\renewcommand{\shortauthors}{Your Name}
+%% ==========================================
+
+
+\begin{abstract}
+This is the first lab for the module on Design and Implementation.
+The topic is the use of modern large language models (LLMs), or agents based thereupon, to realize the old dream of N-version programming.
+See IEC 61508, Part 3, Table A.2, row 3d.
+
+This lab has three parts:
+  pre-lab,
+  in-class component,
+  and take-home component.
+All students enrolled in the course are expected to complete the pre-lab and the in-class component.
+The take-home component is one of your options for the ``complete 3 take-home labs'' aspect of the course.
+\end{abstract}
+
+\maketitle
+
+\section{Lab Purpose and Context}
+
+Earlier in this module, we examined IEC~61508’s treatment of redundancy and diversity in hardware and software. 
+We saw that:
+
+\begin{itemize}
+  \item Hardware redundancy is often justified using probabilistic independence assumptions.
+  \item Software design diversity (IEC~61508 Part~3, Table~A.2, row~3d) --- typically known as \textbf{$N$-version programming} --- is recommended more cautiously.
+\end{itemize}
+
+We also reviewed the mathematical argument behind redundancy, which hinges on independence.
+Let $F_i$ denote the event that version $i$ fails on a particular input.
+\textbf{Independence} means that for all events $i \neq j$, the occurrence of one failure event does not imply the occurrence of another, \ie:
+
+\[
+P(F_i \cap F_j) = P(F_i) P(F_j)
+\]
+
+If two channels each fail with probability $p$, and failures are independent, then the joint failure probability is $p^2$.
+Generalizing this model, voting architectures constructed out of components with independent failure rates (\eg 1-out-of-2/1oo2, 2-out-of-3/2oo3) dramatically reduce the probability of failure.
+
+However, as discussed in class, this independence assumption is questionable in software.
+Knight and Leveson (1990) spearheaded the experimental evaluation of $N$-version programming and found substantial correlation in failures across independently-developed programs based on the same specification.
+Their results challenged the idea that independent software development naturally produces independent software faults.
+
+In this lab, you will run a modern version of that experiment.
+
+\subsection{From Knight \& Leveson to LLMs}
+
+Knight and Leveson’s original experiment required human teams independently implementing the same specification.
+Such arrangements are expensive and have not been found to offer the necessary failure independence to obtain the polynomial reduction in failure when combined.
+However, in the modern era, large language models (LLMs) allow us to generate multiple implementations of the same specification at very low marginal cost.
+This raises a natural question:
+
+\begin{quote}
+\textit{Can LLMs cheaply realize the old dream of $N$-version programming?}
+\end{quote}
+
+More precisely, do independently generated implementations by LLMs exhibit the failure independence required for voting-based reliability improvements?
+
+\subsection{Experimental Questions}
+
+This lab investigates two claims:
+
+\begin{enumerate}
+  \item \textbf{Independence Claim.} 
+  Do LLM-generated implementations exhibit statistically independent failures, as assumed in classical $N$-version programming?
+
+  \item \textbf{Reliability Improvement Claim.}
+  Even if failures are correlated, as Knight \& Leveson found, does $N$-version voting improve observed reliability relative to a single implementation?
+\end{enumerate}
+
+\subsection{System Under Study}
+
+You will be given a frozen specification for a program.
+
+You may not modify the specification.
+
+Using an LLM or agent system of your choice, you will generate $N$ distinct implementations of the same specification.
+Each implementation must satisfy the same functional requirements, but may be produced using different prompting strategies or generation workflows.
+This follows the definition of \emph{design diversity}: two or more items carrying out the same function but differing in design  
+
+\subsection{Development and Evaluation Structure}
+
+To mirror the structure of Knight \& Leveson’s experiment:
+
+\begin{itemize}
+  \item You will have access to a \textbf{visible test suite} during development.
+  \item You may iteratively refine prompts and LLM/agent configurations using feedback from this suite.
+  \item A \textbf{reserved test set} will be held back and used only for final evaluation.
+\end{itemize}
+
+The specification remains fixed throughout.
+The reserved inputs will be used to measure:
+\begin{itemize}
+  \item Individual failure rates,
+  \item Joint failure rates across versions,
+  \item Observed reliability of $k$-out-of-$N$ voting.
+\end{itemize}
+
+
+In this lab, you will empirically estimate:
+
+\begin{itemize}
+  \item Marginal failure probability,
+  \item Joint failure probability,
+  \item Conditional failure probability.
+\end{itemize}
+
+You will compare observed joint failure rates to those predicted under independence.
+This directly operationalizes the mathematical reasoning behind redundant computation from the lecture.
+
+\subsection{Learning Objectives}
+
+After completing this lab, you should be able to:
+
+\begin{itemize}
+  \item Explain the mathematical basis of redundancy under independence.
+  \item Critically evaluate the independence assumption in software design diversity.
+  \item Design and conduct an empirical study evaluating correlated failures.
+  \item Use LLMs for simple tasks.
+  \item Analyze the effectiveness of $N$-version voting in the presence of correlation.
+  \item Connect empirical results to IEC~61508’s guidance on design diversity.
+\end{itemize}
+
+
+\input{1-pre-lab}
+\input{2-in-class}
+\input{3-take-home}
+\clearpage
+\input{appendix}
+
+%% ==========================================
+%% BIBLIOGRAPHY
+%% ==========================================
+\clearpage
+\nocite{source_example}
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{refs} 
+
+\end{document}

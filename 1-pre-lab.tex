@@ -1,0 +1,93 @@
+\section{Pre-Lab Assignment}
+
+Before the in-class session, complete the following:
+
+\begin{enumerate}
+
+  \item \textbf{Review the Lecture Slides.}
+
+  Re-read the slides from the unit on redundancy and diversity in software engineering.
+  In particular, review:
+
+  \begin{itemize}
+    \item The probabilistic argument for reliability improvement under independence.
+    \item The derivation for 1oo2 voting.
+    \item IEC~61508 Part~3, Table~A.2, row~3d (Design diversity).
+    \item The summary of the Knight \& Leveson experimental evaluation.
+  \end{itemize}
+
+  \item \textbf{Derive the 2oo3 Reliability Formula.}
+
+  Suppose each version fails independently with probability $p$ on a given demand.
+  Let $q = 1 - p$ denote the probability of success.
+
+  In lecture, we derived the system failure probability for the 1-out-of-2 (1oo2) case, where the system is correct if at least one version is correct:
+
+  \[
+    P(\text{system failure}) = p^2.
+  \]
+
+  Now consider a 2oo3 (two-out-of-three) voter, \ie the system is correct if at least two of the three versions are correct.
+
+  \begin{itemize}
+    \item Enumerate the failure cases for the voter.
+    \item Use independence to compute the probability of each case.
+    \item Derive an expression for:
+    \[
+      P(\text{system failure})
+    \]
+    as a function of $p$ and $q$.
+  \end{itemize}
+
+  Your final expression should be written in closed form (no summation required at this stage).
+  Show your reasoning clearly.
+
+  \begin{tcolorbox}[colback=yellow!10,colframe=black,boxrule=0.5pt]
+  \textbf{Deliverable:} Give your derivation of the 2oo3 system failure probability.
+  Your answer must:
+  \begin{itemize}
+      \item Clearly enumerate the failure cases,
+      \item Use the independence assumption explicitly,
+      \item Present the final expression as a simplified closed-form formula.
+  \end{itemize}
+  \end{tcolorbox} 
+  
+  \item \textbf{Set Up Your LLM Environment.}
+
+  Ensure that you have access to an LLM of your choice that you will use to generate program implementations for this lab.
+
+  You may use any of the following:
+
+  \begin{itemize}
+    \item \textbf{Gemini Pro}, available to you as a student.
+    \item \textbf{Microsoft Copilot}, to which Purdue provides access.
+    \item An \textbf{open-weight model} running locally on your laptop (e.g., via a system such as \texttt{ollama}).
+  \end{itemize}
+
+  Regardless of the system you choose, confirm that you can:
+
+  \begin{itemize}
+    \item Start a fresh session (to create independent ``versions'').
+    \item Provide a specification and obtain generated source code.
+    \item Run the generated code locally against a simple test suite.
+  \end{itemize}
+
+  \item \textbf{Review the Experimental Structure.}
+
+  Review the experimental plan described in the lab handout:
+
+  \begin{itemize}
+    \item A frozen specification will be provided.
+    \item You will generate $N$ distinct implementations.
+    \item A visible test suite will be available during development.
+    \item A reserved test set will be used for final evaluation.
+  \end{itemize}
+
+  Make sure you understand:
+
+  \begin{itemize}
+    \item What is being measured (marginal failure, joint failure, voting reliability).
+    \item Where the independence assumption enters the reliability argument.
+  \end{itemize}
+
+\end{enumerate}

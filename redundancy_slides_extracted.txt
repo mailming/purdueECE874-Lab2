@@ -1,0 +1,114 @@
+=== Slide 1 ===
+Risk mitigation via Redundancy
+Does redundancy work in SE?
+
+Prof. James C. Davis, Prof. Santiago Torres-Arias
+ECE 50874/595: Advanced Software Engineering
+1
+Elmore*
+
+=== Slide 2 ===
+Introductory remarks
+2
+
+=== Slide 3 ===
+The materials for this unit include excerpts from IEC 61508. If you are participating in this class, you have student access to IEC 61508 through the USA’s ANSI organization, and therefore can view this content. If you are no longer participating in the class (eg because the semester has ended), please do not access this material unless you re-obtain access to IEC 61508 through some other means.
+
+If you access IEC 61508 inappropriately via these slides, it could harm the ability of future iterations of this course to access international standards for educational purposes. Please be good!
+
+		~JD
+LEGAL DISCLAIMER
+3
+As of Spring 2024, access to the IEC 61508 family costs ~$3000 USD. Thanks ANSI!
+
+=== Slide 4 ===
+4
+61508-3-Figure 6
+Software systematic capability and the development lifecycle (“V-model”)
+
+=== Slide 5 ===
+A comparison of 61508’s position of redundancy and diversity for SW vs HW
+5
+“When the formula to be computed is very complicated, it may be algebraically arranged for computation in two or more totally distinct ways, and two or more sets of cards may be made. If the same constants are now employed with each set, and if under these circumstances the results agree, we may then be quite secure of the accuracy of them all.” – C. Babbage, 1837
+
+=== Slide 6 ===
+61508 Part 2, Table A.15 – Techniques & measures to control Systematic failures caused by HW design
+6
+Design diversity: Two or more items carrying out the same function but differing in design
+Functional diversity: Two or more items carrying out different functions for same safety goal
+Watchdog: A HW monitor confirms liveness of the HW that should be acting
+Redundant compute: Distinct channels perform redundant computation, e.g. 2oo3 voting
+
+=== Slide 7 ===
+Suppose we use the redundant compute method (1 out-of 2 voting)
+Suppose we want to reduce Prob(failure) to reach SIL 1: PFH < 1E-5
+Model/Assumption: Suppose the failures are independent.
+	 What PFH do we need to achieve for each component?
+	 What is it for SIL 2 and 3?
+
+Is the assumption sound? When might it fail?
+
+If we move to design diversity,
+    how does it affect the problem statement?
+The math behind the HW redundancy guidance
+7
+
+=== Slide 8 ===
+Diversity/Redundancy in Table A.2: SW D&D – SW Arch. Design
+8
+3. “Fault-tolerance via diversity and state control”
+Watchdog: A SW monitor confirms liveness of the SW that should be acting
+Design diversity: Two or more items carrying out the same function but differing in design
+Functional diversity: Two or more items carrying out different functions for same safety goal
+
+=== Slide 9 ===
+Design diversity: SIL recommendations for HW vs SW
+9
+Hardware
+Software
+ Design diversity is considered safer in HW than in SW 
+Think-pair-share: Why might this be?
+
+=== Slide 10 ===
+Design Technique:Diverse Redundancy With the Same Specification
+10
+
+=== Slide 11 ===
+Suppose you are a member of the IEC trying to fill out the recommendations in this SIL table yourself.
+Design an experiment to help you guide engineers.
+What is your definition of “independent failures”?
+Hypothesis / null, and rationale
+Study design
+Subjects and Independence
+Tasks
+Metrics
+
+4 minutes: Design
+3 minutes: Pair with partner
+5 minutes: Readout
+Experimental design
+11
+
+=== Slide 12 ===
+The real experiment
+12
+Panel discussion at Purdue, 2022, after a talk by Nancy G. Leveson:
+https://engineering.purdue.edu/Engr/AboutUs/News/Events/DistinguishedLectures/2022-2023/nancy-leveson-panel
+
+=== Slide 13 ===
+Experimental evaluation of the assumption of independence
+13
+Eckhardt Jr, D.E., Caglayan, A.K., Knight, J.C., Lee, L.D., McAllister, D.F., Vouk, M.A. and Kelly, J.P., 1990. An experimental evaluation of software redundancy as a strategy for improving reliability (No. NAS 1.15: 102613).
+
+=== Slide 14 ===
+We will attempt to replicate the Knight & Leveson experiment on N-version programming
+This time, using LLM-based agents
+
+(No, I don’t have any idea what will happen, yes, you’re just doing an experiment I’ve been curious about for awhile)
+Friday’s lab
+14
+
+=== Slide 15 ===
+Friday’s lab
+15
+

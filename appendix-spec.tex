@@ -1,0 +1,427 @@
+\appendix
+
+\section{Specification: The Tax Code}
+\label{appendix:tax-spec}
+
+\subsection{Background}
+
+You live in the country of Avalon.
+Spring is here and the smell of taxes fills the air.
+Like the United States, citizens of Avalon pay taxes both to their federal government and to the state in which they reside.
+
+Avalon has recently modernized its tax system.
+There is a new federal tax code (\cref{appendix:tax-spec:federal}) and a new tax code for each state (\cref{appendix:tax-spec:state}).
+However, the official tax calculator is proprietary and not publicly available.
+You would like to implement your own tax calculator so that you do not have to compute your taxes by hand.
+
+Your task is to implement a tax computation engine that reads an input file describing taxpayers' financial information and outputs the total tax that each one owes under the 2026 Avalon tax code (federal + state).
+
+\subsection{Avalon Federal Tax Code}
+\label{appendix:tax-spec:federal}
+
+Taxes are taken on the adjusted income, which is derived from the gross income and a series of deductions.
+
+\subsubsection{Gross Income}
+
+Gross income is defined as the sum of all taxable income sources before deductions or credits are applied.
+Gross income consists of the following components:
+
+\begin{itemize}
+  \item \textbf{Wage Income (W2).}  
+  The total annual wage income reported by the employer.  
+  This value is provided directly in the input and is treated as fully taxable.
+
+  \item \textbf{Capital Gains and Losses.}  
+  Net income resulting from the sale of financial assets.  
+  Capital gain for a transaction is defined as:
+  \[
+  \text{Gain} = \text{Sale Price} - \text{Purchase Price}.
+  \]
+  Losses occur when this quantity is negative.
+\end{itemize}
+
+Gross income is computed as:
+
+\[
+\text{Gross Income} = \text{Wage Income} + \text{Net Capital Gain}.
+\]
+
+Net capital gain combines the gains and losses from the reporting year.
+
+\subsubsection{Capital Gains Computation}
+
+Taxpayers may have invested in one of the three publicly traded companies in Avalon: Ananya's Wool Whimsy, Miko's Coal Collaborative, and Esteban's Timberfell.
+If a taxpayer sells any portion of an investment during the reporting year, the gain or loss from that sale (delta from the purchase price) is taxable.
+
+\paragraph{Realized Gain or Loss.}
+
+For each sale of an asset, the realized gain (or loss) is defined as:
+
+\[
+\text{Gain} = q \cdot (p_s - p_b),
+\]
+
+where:
+\begin{itemize}
+  \item $q$ is the quantity of shares sold,
+  \item $p_s$ is the sale price per share,
+  \item $p_b$ is the purchase price per share.
+\end{itemize}
+
+\paragraph{Cost Basis Matching Rule.}
+
+If shares in one of the companies were purchased at different times of the year, the purchase price may have varied.
+To calculate gains, sales must be matched to prior purchases using the \textbf{FIFO} (first-in, first-out) rule.
+That is, shares sold are matched against the earliest purchased shares that have not yet been sold.
+
+\paragraph{Net Capital Gain.}
+
+The taxpayer’s \textbf{Net Capital Gain} is the sum of realized gains and losses across all assets and all sales during the reporting year:
+
+\[
+\text{Net Capital Gain} = \sum_{\text{all realized transactions}} \text{Gain}.
+\]
+
+All transactions are conducted to three decimal places.
+Results should be rounded to the nearest Avalon dollar.
+
+\subsubsection{Adjustments and Deductions}
+
+After computing gross income, the taxpayer may be eligible for certain adjustments and deductions.
+These reduce income before the application of tax brackets and surcharge calculations.
+
+Deductions are applied in the order specified below.
+All deductions reduce gross income to produce \textbf{Taxable Income}.
+
+Any excess deduction beyond gross income is discarded and does not carry forward.
+
+A taxpayer may either take the Standard Deduction or itemize deductions.
+
+\paragraph{Standard Deduction}
+
+The Standard Deduction is a fixed dollar amount: \$10,000.
+If elected, it reduces gross income directly.
+If the Standard Deduction is taken, no itemized deductions may be applied.
+
+\medskip
+
+\paragraph{Itemized Deductions}
+
+Instead of taking the Standard Deduction, a taxpayer may elect to itemize deductions.
+If itemizing, the taxpayer may claim:
+
+\begin{itemize}
+  \item Charitable Donation Deduction,
+  \item Child Tax Deduction.
+\end{itemize}
+
+Itemized deductions reduce gross income before bracket computation.
+
+
+\medskip
+
+\paragraph{Charitable Donation Deduction}
+
+The taxpayer may report a list of charitable donations made during the reporting year.
+Each donation is specified as a monetary amount in dollars.
+
+The Charitable Donation Deduction is equal to the sum of all reported donations.
+
+\[
+\text{Charitable Deduction} = \sum_{i=1}^{n} d_i
+\]
+
+where $d_i$ are the individual donation amounts.
+
+\medskip
+
+\paragraph{Child Tax Deduction}
+
+A taxpayer may claim a deduction based on the number of qualifying children.
+The deduction percentage increases with each additional child, up to a maximum of 10 children.
+
+The applicable percentage schedule is:
+
+\begin{itemize}
+  \item 1\% for the first child,
+  \item 2\% for the second child,
+  \item 3\% for the third child,
+  \item \dots
+  \item up to 10\% for the tenth child.
+\end{itemize}
+
+The deduction is computed as a percentage of taxable income before the child deduction is applied.
+
+\subsubsection{Taxable Income}
+
+Formal definition:
+\[
+\text{Taxable Income} = \text{Gross Income} - \text{Allowable Deductions}.
+\]
+
+The taxpayer is obligated to select whichever option (Standard or Itemized) results in the lower total tax owed.
+
+\subsubsection{Progressive Tax Brackets}
+
+National income tax is applied to the Taxable income according to the following marginal bracket structure:
+
+\begin{center}
+\begin{tabular}{l l}
+\toprule
+\textbf{Taxable Income Range} & \textbf{Marginal Rate} \\
+\midrule
+$0 \leq I \leq 100{,}000$ & 5\% \\
+$100{,}000 < I \leq 200{,}000$ & 10\% \\
+$200{,}000 < I \leq 300{,}000$ & 15\% \\
+$I > 300{,}000$ & 20\% \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\medskip
+
+\textit{Policy Note:}  
+This bracket structure is intended to incentivize citizens to make more money by maintaining relatively modest increases in marginal tax rates at higher income levels.
+
+\subsubsection{High-Income Surcharge}
+
+In addition to the national income tax computed under the progressive bracket structure, a High-Income Surcharge may apply.
+
+This surcharge is computed independently of deductions and bracket calculations.
+It is applied directly to \textbf{Gross Income}.
+
+\paragraph{Five-Year Income History.}
+
+Each taxpayer provides reported gross income values for the previous five tax years:
+
+\[
+Y_{t-1},\ Y_{t-2},\ Y_{t-3},\ Y_{t-4},\ Y_{t-5}.
+\]
+
+These values are expressed in dollars and may include fractional cents.
+
+\paragraph{Exponentially Weighted Moving Average (EWMA).}
+
+The five-year average income is computed using an exponentially weighted moving average with smoothing factor $\alpha = 0.6$.
+
+The EWMA is defined recursively as:
+
+\[
+E_1 = Y_{t-5}
+\]
+
+\[
+E_k = \alpha Y_{t-(6-k)} + (1 - \alpha) E_{k-1}
+\quad \text{for } k = 2,3,4,5.
+\]
+
+The final EWMA value is $E_5$.
+
+\paragraph{Threshold for Surcharge.}
+
+If
+
+\[
+E_5 > 1{,}000{,}000,
+\]
+
+the taxpayer is subject to the High-Income Surcharge.
+
+\paragraph{Surcharge Computation.}
+
+If applicable, the surcharge is computed as:
+
+\[
+\text{Surcharge} = 0.02 \times \text{Gross Income}.
+\]
+
+If the EWMA threshold is not exceeded, the surcharge is zero.
+
+\paragraph{Total National Tax.}
+
+The total national tax is:
+
+\[
+\text{National Tax} =
+\text{Bracket Tax (on Taxable Income)} + \text{Surcharge}.
+\]
+
+\subsection{Avalon State Tax Code}
+\label{appendix:tax-spec:state}
+
+Each taxpayer resides in exactly one state.
+They cannot be employed in any other state, nor leave the state at any time, thus simplifying the tax code (although perhaps not their lives).
+
+State tax is computed independently of national tax and added to the total tax owed.
+The two states of Avalon are:
+
+\begin{itemize}
+  \item California
+  \item Texas
+\end{itemize}
+
+\subsubsection{California State Tax}
+
+California computes state tax based on \textbf{Gross Income}, but treats income components differently.
+
+State tax is defined as:
+
+\[
+\text{CA Tax} = 0.04 \cdot \text{Wage Income}
++ 0.06 \cdot \max(0,\ \text{Net Capital Gain})
+\]
+
+Notes:
+
+\begin{itemize}
+  \item Wage income is taxed at a flat rate of 4\%.
+  \item Positive net capital gain is taxed at 6\%.
+  \item If net capital gain is negative, it contributes 0 to the capital-gains component of state tax.
+  \item No deductions (standard, charitable, or child) apply to California state tax.
+  \item If the federal High-Income Surcharge applies to a California resident, a 5\% surcharge is also applied at the state level.
+\end{itemize}
+
+\subsubsection{Texas State Tax}
+
+Texas computes state tax based on \textbf{Taxable Income} (after deductions).
+
+Texas uses the following marginal bracket structure:
+
+\begin{center}
+\begin{tabular}{l l}
+\toprule
+\textbf{Taxable Income Range} & \textbf{Marginal Rate} \\
+\midrule
+$0 \leq I \leq 90{,}000$ & 3\% \\
+$90{,}000 < I \leq 200{,}000$ & 5\% \\
+$I > 200{,}000$ & 7\% \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Tax is computed marginally.
+
+Notes:
+
+\begin{itemize}
+  \item Texas state tax applies to Taxable Income as defined in the national tax section.
+  \item If their federal deductions exceed 15,000, then citizens shall apply a 1\% deduction to their comptued state tax.
+  \item In Texas, the High-Income Surcharge does not affect state tax computation.
+\end{itemize}
+
+\subsubsection{Total Tax Liability}
+
+Total tax owed is:
+
+\[
+\text{Total Tax} =
+\text{National Tax}
++
+\text{State Tax}.
+\]
+
+\subsection{Numerical Precision}
+
+All taxes shall be paid in whole dollars.
+
+\subsection{Input and Output Format Specification}
+
+\subsubsection{Input Format (NDJSON)}
+
+The input file shall be in \textbf{NDJSON} (newline-delimited JSON) format.
+Each line of the file is a valid JSON object representing a single household.
+
+Each household object contains four conceptual components:
+
+\begin{itemize}
+  \item Household data,
+  \item Earned income history,
+  \item Investment data,
+  \item Charitable giving.
+\end{itemize}
+
+\paragraph{Household Data}
+
+\begin{itemize}
+  \item \texttt{taxpayer\_id} (string)
+  \item \texttt{state} (string: \texttt{"California"} or \texttt{"Texas"})
+  \item \texttt{w2\_income} (number)
+  \item \texttt{num\_children} (integer)
+\end{itemize}
+
+\paragraph{Earned Income History}
+
+\begin{itemize}
+  \item \texttt{prior\_five\_years\_income} (array of exactly five numbers)
+\end{itemize}
+
+The array is ordered from oldest to most recent year:
+\[
+[Y_{t-5}, Y_{t-4}, Y_{t-3}, Y_{t-2}, Y_{t-1}]
+\]
+
+\paragraph{Investment Data}
+
+Investment activity is represented using two arrays:
+
+\begin{itemize}
+  \item \texttt{purchases}: array of objects
+  \item \texttt{sales}: array of objects
+\end{itemize}
+
+Each purchase object contains:
+
+\begin{itemize}
+  \item \texttt{asset\_id} (string)
+  \item \texttt{date} (string, ISO-8601 format: \texttt{YYYY-MM-DD})
+  \item \texttt{quantity} (number)
+  \item \texttt{unit\_price} (number)
+\end{itemize}
+
+Each sale object contains:
+
+\begin{itemize}
+  \item \texttt{asset\_id} (string)
+  \item \texttt{date} (string, ISO-8601 format: \texttt{YYYY-MM-DD})
+  \item \texttt{quantity} (number)
+  \item \texttt{unit\_price} (number)
+\end{itemize}
+
+\paragraph{Charitable Giving}
+
+Charitable giving is represented as:
+
+\begin{itemize}
+  \item \texttt{charitable\_donations}: array of numbers
+\end{itemize}
+
+Each element of the array represents the monetary value (in dollars and cents) of a single charitable donation made during the reporting year.
+
+\subsubsection{Output Format (NDJSON)}
+
+The output file shall also be in \textbf{NDJSON} (newline-delimited JSON) format.
+Each line of the output corresponds one-to-one with a household object in the input file.
+
+For every input household object, exactly one output JSON object must be produced.
+
+Each output object contains the following fields:
+
+\begin{itemize}
+  \item \texttt{taxpayer\_id} (string),
+  \item \texttt{federal\_tax} (number),
+  \item \texttt{state\_tax} (number).
+\end{itemize}
+
+The order of output taxes due must match the order of households in the input file.
+
+\subsubsection{CLI}
+
+Each implementation should be \texttt{chmod +x}'d so the runner can invoke it, and must accept the following command-line arguments:
+
+\begin{itemize}
+  \item \verb|--inputFile HOUSEHOLDS.NDJSON| : specifies the path to an NDJSON input file (one JSON object per line).
+  \item \verb|--outputFile TAXES.NDJSON| : specifies the path where the implementation must write its NDJSON output.
+\end{itemize}
+
+The program must read from the given input file and write all results to the given output file.
+No other input/output behavior should be required.
