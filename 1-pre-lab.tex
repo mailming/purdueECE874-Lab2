@@ -50,6 +50,21 @@ Before the in-class session, complete the following:
       \item Use the independence assumption explicitly,
       \item Present the final expression as a simplified closed-form formula.
   \end{itemize}
+
+  \medskip
+  \textbf{Solution.}
+  \begin{itemize}
+      \item \textbf{Failure cases:} The 2oo3 system fails when fewer than two versions are correct, \ie when exactly 0 or exactly 1 version is correct.
+      \item \textbf{Under independence:} Let $p$ be the probability a version fails and $q = 1 - p$ the probability it is correct. By independence:
+      \begin{itemize}
+          \item $P(0 \text{ correct}) = P(\text{all three fail}) = p \cdot p \cdot p = p^3$.
+          \item $P(1 \text{ correct}) = 3 p^2 q$ (only V1 correct, or only V2, or only V3; each has probability $p^2 q$).
+      \end{itemize}
+      \item \textbf{Closed form:}
+      \[
+      P(\text{system failure}) = p^3 + 3p^2 q = p^2(p + 3q) = p^2(3 - 2p).
+      \]
+  \end{itemize}
   \end{tcolorbox} 
   
   \item \textbf{Set Up Your LLM Environment.}
