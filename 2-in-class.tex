@@ -41,7 +41,7 @@ This will result in groups of 2-3 online students for this submission.
 \textbf{Team members:}  
 \begin{itemize}
     \item Ming Jia (jia213@purdue.edu)
-    \item NAME 2 (email)
+    \item Dovid Korn (korn4@purdue.edu)
 \end{itemize}
 \textbf{Team signup forum:} \labTwoForumLink\par
 Please indicate your team members in the Brightspace discussion forum link above.
@@ -164,6 +164,34 @@ Within your team, discuss:
 You are not required to perform formal statistical testing at this stage.
 The goal is to build intuition about correlated behavior and the independence assumption using empirical disagreement data.
 If you choose to complete the take-home portion of the lab, you will perform a larger version of this experiment and may incorporate more formal modeling of the underlying hypothesis of independence.
+
+\subsection{Agreement Results on Test Set 2 (All Three Implementations)}
+
+All three implementations (impl-1 Python, impl-2 Go, impl-3 C++) were run on Test Set 2.
+The agreement table CSV has columns \texttt{taxpayer\_id}, \texttt{out\_v1}, \texttt{out\_v2}, \texttt{out\_v3} (federal + state tax totals per version).
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lc}
+\toprule
+Metric & Value \\
+\midrule
+Total inputs (Test Set 2) & 10{,}000 \\
+Unanimous agreement (3/3) & 9{,}653 (96.53\%) \\
+Exactly one dissenting version (2--1 split) & 330 (3.30\%) \\
+All three versions differ & 17 (0.17\%) \\
+Times impl-1 disagrees with the other two & 347 \\
+Times impl-2 disagrees with the other two & 347 \\
+Times impl-3 disagrees with the other two & 347 \\
+\bottomrule
+\end{tabular}
+\caption{Agreement statistics for impl-1 (Python), impl-2 (Go), and impl-3 (C++) on Test Set 2.}
+\label{tab:agreement}
+\end{table}
+
+\textbf{Discussion.}
+About 96.5\% of inputs show unanimous agreement; 3.3\% have a single dissenting version (2--1 split) and 0.17\% have all three outputs different.
+Each implementation disagrees with the other two on 347 inputs, so no single version is consistently the outlier---disagreement is spread across implementations, which is consistent with independent (or weakly correlated) fault behavior rather than one consistently faulty version.
 
 \begin{tcolorbox}[colback=purple!10,colframe=purple!70!black,boxrule=0.5pt]
 \textbf{Deliverable for the In-Class Portion:}
