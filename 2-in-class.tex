@@ -193,6 +193,9 @@ Times impl-3 disagrees with the other two & 347 \\
 About 96.5\% of inputs show unanimous agreement; 3.3\% have a single dissenting version (2--1 split) and 0.17\% have all three outputs different.
 Each implementation disagrees with the other two on 347 inputs, so no single version is consistently the outlier---disagreement is spread across implementations, which is consistent with independent (or weakly correlated) fault behavior rather than one consistently faulty version.
 
+\textbf{Why results differ.}
+Likely causes include: (1)~\textbf{Floating-point behavior}---Python, Go, and C++ use different runtime and library behavior for rounding (e.g., half-up vs.\ half-even) and for the order of operations in expressions, which can change the least significant digits in the EWMA recursion and in bracket/surcharge math; (2)~\textbf{When rounding is applied}---the spec requires rounding to the nearest dollar but does not fix intermediate rounding points, so one implementation may round after each step while another rounds only at the end, producing different totals; (3)~\textbf{Threshold and boundary cases}---comparisons such as taxable income at bracket boundaries (e.g., near \$100{,}000 or \$300{,}000) or EWMA at the surcharge threshold (\$1{,}000{,}000) are sensitive to tiny numeric differences, so one version may place a value just above the threshold and another just below; (4)~\textbf{FIFO and decimal handling}---capital gains are specified to three decimal places and then rounded; small differences in how each language rounds or accumulates over many lots can propagate into the final tax.
+
 \begin{tcolorbox}[colback=purple!10,colframe=purple!70!black,boxrule=0.5pt]
 \textbf{Deliverable for the In-Class Portion:}
 Submit:
